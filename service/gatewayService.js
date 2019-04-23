@@ -144,8 +144,7 @@ function retriveOrder(requestData, url, callback) {
 * @param {*} requestData -request body for getSession operation
 * @param {*} callback -return callback body
 */
-function getSession(requestData, callback) {
-    console.log('asdfas[dfapsdfasjdfj')
+function getSession(requestData, callback) {    
     var url = utils.getTestMerchantUrl(config) + "/session";
     var options = {
         url: url,
@@ -228,7 +227,6 @@ function browserPaymentReceiptResult(url, callback) {
 * @param {*} callback -return callbackbody or error page
 */
 function check3dsEnrollment(operation, sessionId, callback) {
-    //     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     var url = utils.getTestMerchantUrl(config) + "/session/" + sessionId;
     var options = {
         url: url,
@@ -290,18 +288,18 @@ function process3dsResult(requestData, orderId, transactionId, callback) {
         method: "PUT",
         json: requestData,
     }
-    utils.setAuthentication(config, options);
-    return request(options, function (error, response, body) {
-        if (error) {
+    utils.setAuthentication(config, options);    
+    return request(options, function (error, result) {
+        if ( result.body.hasOwnProperty('error')) {
             return callback({
                 error: true,
-                message: error,
+                message: result.body,
                 url: requestUrl
             });
         } else {
             return callback({
                 error: false,
-                message: body,
+                message: result.body,
                 url: requestUrl
             });
         }
@@ -311,7 +309,7 @@ function process3dsResult(requestData, orderId, transactionId, callback) {
 function setSessionVariables(sessionid, secureid) {
     tempVariables = {
         sessionidVariable: sessionid,
-        securityVariable: utils.getSecureId()
+        securityVariable: secureid
     }
 }
 function getSessionId() {
